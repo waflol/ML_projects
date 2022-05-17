@@ -38,6 +38,6 @@ def train_on_epoch(x,y,model,loss_fn):
 def val_on_epoch(x,y,model,loss_fn):
     val_logits = model(x, training=False)
     loss_value = loss_fn(y, val_logits)
-    val_logits = tf.argmax(val_logits, axis=1, output_type=tf.int32)
+    # val_logits = tf.argmax(val_logits, axis=1, output_type=tf.int32)
     return val_logits, loss_value
 
