@@ -77,3 +77,24 @@ def generate_class_weights(class_series, multi_class=True, one_hot_encoded=False
     class_weights = [n_samples / (n_classes * freq) if freq > 0 else 1 for freq in class_count]
     class_labels = range(len(class_weights)) if mlb is None else mlb.classes_
     return dict(zip(class_labels, class_weights))
+
+
+def weighted_categorical_crossentropy(class_weight):
+    """Return a loss function for a specific class weight tensor
+
+    Params:
+        class_weight: 1-D constant tensor of class weights
+    
+    Returns:
+        A loss function where each loss is scaled according to the observed class
+    """
+    def loss(y_obs,y_pred):
+        y_obs = tf.dtypes.cast(y_obs,tf.int32)
+        hothot = tf.one_hot(tf.reshape(y_obs,[-1]),depth=len(class_weight))
+        weight = tf.math.multiply(class_weight,hothot)
+        weight = tf.reduce_sum(weight,axis=-1)
+        losses = tf.compat.v1.losses.sparse_softmax_cross_entropy(
+            labels=y_obs,logits=y_pred,weight=weight
+        )
+        return losses
+    return loss
