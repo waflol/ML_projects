@@ -94,7 +94,7 @@ def weighted_categorical_crossentropy(class_weight):
         weight = tf.math.multiply(class_weight,hothot)
         weight = tf.reduce_sum(weight,axis=-1)
         losses = tf.compat.v1.losses.sparse_softmax_cross_entropy(
-            labels=y_obs,logits=y_pred,weight=weight
+            labels=y_obs,logits=y_pred,weights=weight
         )
         return losses
     return loss
